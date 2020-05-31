@@ -30,18 +30,28 @@
             };
         },
         methods: {
+
+            getMeetings() {
+                this.$http.get('meetings')
+                    .then(response => {this.meetings = response.body});
+            },
             addNewMeeting(meeting) {
-                this.meetings.push(meeting);
-            },
-            addMeetingParticipant(meeting) {
-                meeting.participants.push(this.username);
-            },
-            removeMeetingParticipant(meeting) {
-                meeting.participants.splice(meeting.participants.indexOf(this.username), 1);
+                this.$http.post('meetings', meeting).then(response => this.meetings.push(response.body));
+                this.getMeetings();
             },
             deleteMeeting(meeting) {
-                this.meetings.splice(this.meetings.indexOf(meeting), 1);
-            }
+                //this.meetings.splice(this.meetings.indexOf(meeting), 1);
+                this.$http.delete('meetings/' + meeting.id.toString()).then(response => this.meetings.splice(this.meetings.indexOf(meeting), 1));
+                this.getMeetings();
+            },
+           
+
+
+
+        },
+        mounted() {
+            this.getMeetings()
+            //this.$nextTick(this.getMeetings());
         }
     }
 </script>
